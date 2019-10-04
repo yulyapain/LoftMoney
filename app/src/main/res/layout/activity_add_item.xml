@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_above="@id/add_button"
+    android:paddingStart="33dp"
+    android:paddingEnd="104dp">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edittext_name_hint"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edittext_price_hint"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"/>
+</LinearLayout>
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_button_title"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:textColor="@color/white_three"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:letterSpacing="0.04"/>
+
+</RelativeLayout>
