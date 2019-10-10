@@ -18,5 +18,21 @@ public class AddItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
+        mNameEditText = findViewById(R.id.name_edittext);
+        mPriceEditText = findViewById(R.id.price_edittext);
+
+        Button addButton = findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = mNameEditText.getText().toString();
+                String price = mPriceEditText.getText().toString();
+
+                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(price)) {
+                    setResult(RESULT_OK, new Intent().putExtra("name", name).putExtra("price", price));
+                }
+                finish();
+            }
+        });
     }
 }

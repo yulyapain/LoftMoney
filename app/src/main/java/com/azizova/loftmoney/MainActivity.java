@@ -40,10 +40,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button callAddButton = findViewById(R.id.call_item_activity);
+        callAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                startActivityForResult(new Intent(MainActivity.this, AddItemActivity.class),100);
+            }
+        });
+
         RecyclerView recyclerView = findViewById(R.id.budget_item_list);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
 
         mAdapter = new ItemsAdapter();
         recyclerView.setAdapter(mAdapter);
@@ -53,5 +62,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        int price;
+        try{
+            price = Integer.parseInt(data.getStringExtra("price"));
+        }catch (NumberFormatException e){
+            price = 0;
+        }
+        if(requestCode == 100 && resultCode == RESULT_OK){
+            mAdapter.addItem(new Item(data.getStringExtra("name"), price));
+
+        }
+    }
 }
