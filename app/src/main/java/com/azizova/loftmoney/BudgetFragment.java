@@ -19,6 +19,11 @@ public class BudgetFragment extends Fragment {
 
     private ItemsAdapter mAdapter;
     private static final int REQUEST_CODE = 100;
+    private int position;
+
+    public BudgetFragment(int position) {
+        this.position = position;
+    }
 
     @Nullable
     @Override
@@ -38,7 +43,7 @@ public class BudgetFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
 
-        mAdapter = new ItemsAdapter();
+        mAdapter = new ItemsAdapter(position);
         recyclerView.setAdapter(mAdapter);
         mAdapter.addItem(new Item("Молоко", 70));
         mAdapter.addItem(new Item("Зубная щётка", 70));

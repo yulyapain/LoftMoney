@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return new BudgetFragment();
+            return new BudgetFragment(position);
         }
 
         @Override
