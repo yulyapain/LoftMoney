@@ -10,13 +10,13 @@
     android:orientation="vertical"
     android:layout_above="@id/add_button"
     android:paddingStart="33dp"
-    android:paddingEnd="104dp">
+    android:paddingEnd="104dp"
+    android:layout_marginBottom="61dp">
     <EditText
         android:id="@+id/name_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/edittext_name_hint"
-        android:textColor="@color/white"
         android:textSize="24sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal" />
@@ -26,12 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/edittext_price_hint"
-        android:textColor="@color/white"
         android:textSize="24sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:inputType="number"
-        android:theme="@style/AppTheme"/>
+        android:inputType="numberDecimal" />
 </LinearLayout>
 
     <Button
@@ -42,7 +40,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@null"
-        android:textColor="@color/white_three"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"

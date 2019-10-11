@@ -1,11 +1,17 @@
 package com.azizova.loftmoney;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +19,21 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> mItemList = new ArrayList<Item>();
+    private int position;
 
+    public ItemsAdapter(int position) {
+        this.position = position;
+    }
+
+    @SuppressLint("ResourceAsColor")
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = View.inflate(parent.getContext(), R.layout.item_view, null);
+        if (position==1){
+            TextView textView = itemView.findViewById(R.id.price_view);
+            textView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.apple_green));
+        }
         return new ItemViewHolder(itemView);
     }
 
