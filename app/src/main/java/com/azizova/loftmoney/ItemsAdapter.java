@@ -18,11 +18,13 @@ import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
+    public static final String INCOME = "income";
     private List<Item> mItemList = new ArrayList<Item>();
     private int position;
+    private final String TYPE;
 
-    public ItemsAdapter(int position) {
-        this.position = position;
+    public ItemsAdapter(final String type) {
+        this.TYPE = type;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -30,7 +32,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = View.inflate(parent.getContext(), R.layout.item_view, null);
-        if (position==1){
+        if (TYPE== INCOME){
             TextView textView = itemView.findViewById(R.id.price_view);
             textView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.apple_green));
         }

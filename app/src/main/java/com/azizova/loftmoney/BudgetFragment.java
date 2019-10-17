@@ -3,6 +3,7 @@ package com.azizova.loftmoney;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +16,34 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BudgetFragment extends Fragment {
 
     private ItemsAdapter mAdapter;
     private static final int REQUEST_CODE = 100;
     private int position;
+    private Api mApi;
+    private static final String TYPE = "fragmentType";
 
-    public BudgetFragment(int position) {
-        this.position = position;
+    public static BudgetFragment newInstance(final String type) {
+        BudgetFragment budgetFragment = new BudgetFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TYPE, type);
+        budgetFragment.setArguments(bundle);
+        return budgetFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mApi = ((LoftApp)getActivity().getApplication()).getApi();
+        loadItems();
     }
 
     @Nullable
@@ -43,11 +64,8 @@ public class BudgetFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
 
-        mAdapter = new ItemsAdapter(position);
+        mAdapter = new ItemsAdapter(getArguments().getString(TYPE));
         recyclerView.setAdapter(mAdapter);
-        mAdapter.addItem(new Item("Молоко", 70));
-        mAdapter.addItem(new Item("Зубная щётка", 70));
-        mAdapter.addItem(new Item("Новый телевизор", 20000));
         return view;
     }
 
@@ -61,9 +79,42 @@ public class BudgetFragment extends Fragment {
         }catch (NumberFormatException e){
             price = 0;
         }
+        final int realPrice = price;
         if(requestCode == 100 && resultCode == Activity.RESULT_OK){
-            mAdapter.addItem(new Item(data.getStringExtra("name"), price));
+            final String name = data.getStringExtra("name");
 
+            final String token = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(MainActivity.TOKEN, "");
+            Call<Status> call = mApi.addItem(new AddItemRequest(name, getArguments().getString(TYPE), price), token);
+            call.enqueue(new Callback<Status>() {
+                @Override
+                public void onResponse(Call<Status> call, Response<Status> response) {
+                    if (response.body().getStatus().equals("success"))
+                        mAdapter.addItem(new Item(name, realPrice));
+                }
+
+                @Override
+                public void onFailure(Call<Status> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
         }
+    }
+
+    public void loadItems(){
+        final String token = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(MainActivity.TOKEN, "");
+        Call<List<Item>> items = mApi.getItems(getArguments().getString(TYPE), token);
+        items.enqueue(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                List<Item> items = response.body();
+                for (Item item : items)
+                    mAdapter.addItem(item);
+            }
+
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+
+            }
+        });
     }
 }
