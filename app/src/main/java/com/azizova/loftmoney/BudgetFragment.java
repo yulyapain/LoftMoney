@@ -76,14 +76,14 @@ public class BudgetFragment extends Fragment {
     public void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        int price;
-        try{
-            price = Integer.parseInt(data.getStringExtra("price"));
-        }catch (NumberFormatException e){
-            price = 0;
-        }
-        final int realPrice = price;
         if(requestCode == 100 && resultCode == Activity.RESULT_OK){
+            int price;
+            try{
+                price = Integer.parseInt(data.getStringExtra("price"));
+            }catch (NumberFormatException e){
+                price = 0;
+            }
+            final int realPrice = price;
             final String name = data.getStringExtra("name");
 
             final String token = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(MainActivity.TOKEN, "");

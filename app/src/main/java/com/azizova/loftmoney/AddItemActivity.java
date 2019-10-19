@@ -1,6 +1,7 @@
 package com.azizova.loftmoney;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText mNameEditText;
     private EditText mPriceEditText;
     private Button mAddButton;
+    String type;
 
     private String mName;
     private String mPrice;
@@ -25,6 +28,9 @@ public class AddItemActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
+        Intent intent = getIntent();
+        type = intent.getStringExtra("type");
+
         mNameEditText = findViewById(R.id.name_edittext);
         mNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -43,6 +49,7 @@ public class AddItemActivity extends AppCompatActivity {
                 checkEditTextHasText();
             }
         });
+        setTextColorForType(mNameEditText);
         mPriceEditText = findViewById(R.id.price_edittext);
         mPriceEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -61,6 +68,7 @@ public class AddItemActivity extends AppCompatActivity {
                 checkEditTextHasText();
             }
         });
+        setTextColorForType(mPriceEditText);
 
         mAddButton = findViewById(R.id.add_button);
         mAddButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +84,29 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
     public void checkEditTextHasText(){
-        mAddButton.setEnabled(!TextUtils.isEmpty(mName)&&!TextUtils.isEmpty(mPrice));
+        Boolean enabled = !TextUtils.isEmpty(mName)&&!TextUtils.isEmpty(mPrice);
+        mAddButton.setEnabled(enabled);
+        setTextColorForType(mAddButton);
+    }
+
+    private void setTextColorForType(TextView textView){
+        switch (type){
+            case MainActivity.EXPENSE:
+                if (textView instanceof Button){
+                    if (textView.isEnabled()) {
+                        textView.setTextColor(ContextCompat.getColor(this, R.color.dark_sky_blue));
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_blue, 0, 0, 0);
+                    }
+                }
+                else
+                    textView.setTextColor(ContextCompat.getColor(this, R.color.dark_sky_blue));
+                break;
+            case MainActivity.INCOME:
+                if (!(textView instanceof Button)){
+                    textView.setTextColor(ContextCompat.getColor(this, R.color.apple_green));
+                }
+                break;
+
+        }
     }
 }
