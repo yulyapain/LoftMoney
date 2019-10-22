@@ -2,6 +2,7 @@ package com.azizova.loftmoney;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -51,6 +52,33 @@ public class MainActivity extends AppCompatActivity {
                 Fragment activeFragment = getSupportFragmentManager().getFragments().get(activeFragmentIndex);
                 activeFragment.startActivityForResult(intent,BudgetFragment.REQUEST_CODE);
                 overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+            }
+        });
+
+        /*viewPager.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY > oldScrollY) {
+                    FloatingActionButton.hide();
+                } else {
+                    FloatingActionButton.show();
+                }
+            }
+        });*/
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 

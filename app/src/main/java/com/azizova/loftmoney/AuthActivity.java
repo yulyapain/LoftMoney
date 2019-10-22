@@ -21,7 +21,7 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acrivity_auth);
+        setContentView(R.layout.activity_auth);
 
         mApi = ((LoftApp)getApplication()).getApi();
 
@@ -30,6 +30,7 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 startActivity(new Intent(AuthActivity.this, MainActivity.class));
             }
         });
