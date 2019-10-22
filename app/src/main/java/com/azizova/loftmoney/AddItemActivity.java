@@ -89,6 +89,12 @@ public class AddItemActivity extends AppCompatActivity {
         setTextColorForType(mAddButton);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.from_left_in, R.anim.from_right_out);
+    }
+
     private void setTextColorForType(TextView textView){
         switch (type){
             case MainActivity.EXPENSE:

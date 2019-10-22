@@ -7,4 +7,5 @@
     <string name="expences">Еxpences</string>
     <string name="income">Income</string>
     <string name="activity_main_toolbar_title">Учет бюджета</string>
+    <string name="enter">ВОЙТИ</string>
 </resources>
