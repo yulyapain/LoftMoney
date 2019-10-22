@@ -2,32 +2,24 @@ package com.azizova.loftmoney;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXPENSE = "expense";
     public static final String INCOME = "income";
-    private static final String USER_ID = "u_azizova";
     public static final String TOKEN = "token";
-    private Api mApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +51,34 @@ public class MainActivity extends AppCompatActivity {
 
                 Fragment activeFragment = getSupportFragmentManager().getFragments().get(activeFragmentIndex);
                 activeFragment.startActivityForResult(intent,BudgetFragment.REQUEST_CODE);
+                overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+            }
+        });
+
+        /*viewPager.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY > oldScrollY) {
+                    FloatingActionButton.hide();
+                } else {
+                    FloatingActionButton.show();
+                }
+            }
+        });*/
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -66,29 +86,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setText(R.string.expences);
         tabLayout.getTabAt(1).setText(R.string.income);
 
-        mApi = ((LoftApp)getApplication()).getApi();
-        final String token = PreferenceManager.getDefaultSharedPreferences(this).getString(TOKEN, "");
-        if (TextUtils.isEmpty(token)) {
-            Call<Status> auth = mApi.auth(USER_ID);
-            auth.enqueue(new Callback<Status>() {
-                @Override
-                public void onResponse(Call<Status> call, Response<Status> response) {
-                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-                    editor.putString(TOKEN, response.body().getToken());
-                    editor.apply();
-
-                    for (Fragment fragment : getSupportFragmentManager().getFragments()){
-                        if (fragment instanceof BudgetFragment){
-                            ((BudgetFragment) fragment).loadItems();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Status> call, Throwable t) {
-                }
-            });
+        for (Fragment fragment :getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof BudgetFragment)
+                ((BudgetFragment) fragment).loadItems();
         }
+
     }
 
     static class BudgetPagerAdapter extends FragmentPagerAdapter{
