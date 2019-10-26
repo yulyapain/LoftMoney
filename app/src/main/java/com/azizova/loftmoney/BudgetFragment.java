@@ -40,6 +40,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private View mView;
+    private FloatingActionButton mFab;
 
     private ActionMode mActionMode;
 
@@ -63,6 +64,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_budget, null);
+        mFab = getActivity().findViewById(R.id.fab);
 
         RecyclerView recyclerView = mView.findViewById(R.id.budget_item_list);
 
@@ -158,6 +160,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mFab.hide();
         MenuInflater menuInflater = new MenuInflater(getActivity());
         menuInflater.inflate(R.menu.menu_delete, menu);
         mActionMode = mode;
@@ -213,6 +216,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        mFab.show();
         mActionMode = null;
         mAdapter.clearSelections();
     }
