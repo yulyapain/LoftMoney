@@ -18,4 +18,7 @@ public interface Api {
 
     @POST("items/add")
     Call<Status> addItem(@Body AddItemRequest request, @Query("auth-token") String token);
+
+    @POST("items/remove")
+    Call<Status> removeItem(@Query("id") String id, @Query("auth-token") String token);
 }

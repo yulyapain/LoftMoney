@@ -1,6 +1,7 @@
 package com.azizova.loftmoney;
 
 import android.annotation.SuppressLint;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,11 +16,53 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> mItemList = new ArrayList<Item>();
-    private int position;
     private final String TYPE;
+    private ItemsAdapterListener mListener;
+
+    private SparseBooleanArray mSelectedItems = new SparseBooleanArray();
+
+    public void clearSelections(){
+        mSelectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public void toggleItem(int position){
+        mSelectedItems.put(position, !mSelectedItems.get(position));
+        notifyDataSetChanged();
+    }
+
+    public void clearItem(int position){
+        mSelectedItems.put(position, false);
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedSize(){
+        int result=0;
+        for (int i = 0; i < mItemList.size(); i++) {
+            if (mSelectedItems.get(i))
+                result++;
+        }
+        return result;
+    }
+
+    public List<Integer> getSelectedItemsId(){
+        List<Integer> result = new ArrayList<>();
+        int i = 0;
+        for (Item item : mItemList) {
+            if (mSelectedItems.get(i)) {
+                result.add(item.getId());
+            }
+            i++;
+        }
+        return result;
+    }
 
     public ItemsAdapter(final String type) {
         this.TYPE = type;
+    }
+
+    public void setListener(ItemsAdapterListener mListener) {
+        this.mListener = mListener;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -36,7 +79,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        holder.bindItem(mItemList.get(position));
+        holder.bindItem(mItemList.get(position), mSelectedItems.get(position));
+        holder.setListener(mListener, mItemList.get(position), position);
     }
 
     public void addItem(Item item){
@@ -55,20 +99,38 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
+        private View mItemView;
         private TextView mNameView;
         private TextView mPriceView;
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            mItemView = itemView;
             mNameView = itemView.findViewById(R.id.name_view);
             mPriceView = itemView.findViewById(R.id.price_view);
         }
 
-        public void bindItem(final Item item){
+        public void bindItem(final Item item, final boolean isSelected){
+            mItemView.setSelected(isSelected);
             mNameView.setText(item.getName());
             mPriceView.setText(
                     mPriceView.getContext().getResources().getString(R.string.price_with_currency, String.valueOf(item.getPrice()))
             );
+        }
+
+        public void setListener(final ItemsAdapterListener listener, final Item item, final int position){
+            mItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(item, position);
+                }
+            });
+            mItemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onItemLingClick(item, position);
+                    return false;
+                }
+            });
         }
     }
 }
