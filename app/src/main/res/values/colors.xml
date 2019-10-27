@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3574fa</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDark">#3574fa</color>
     <color name="colorAccent">#ffc107</color>
-    <color name="white_three">#eaeaea</color>
-    <color name="white">#dbdbdb</color>
-    <color name="medium_grey">#666664</color>
+
+    <color name="pale_orange">#ff9e57</color>
     <color name="dark_sky_blue">#4a90e2</color>
-    <color name="white_two">#efefef</color>
-    <color name="apple_green">#7ed321</color>
-    <color name="dark_gray_blue">#333f59</color>
+    <color name="dark_grey_blue">#333f59</color>
+    <color name="medium_grey">#666664</color>
+    <color name="white">#dbdbdb</color>
+    <color name="charcoal_grey">#37474f</color>
+    <color name="pale_grey">#eceff0</color>
+    <color name="greeny_blue">#4cb5ab</color>
+    <color name="white_two">#ffffff</color>
+    <color name="slate">#455a64</color>
+    <color name="silver">#e4e7e8</color>
+    <color name="marigold">#ffc107</color>
+    <color name="white_four">#e3e3e3</color>
     <color name="white_five">#f2f2f2</color>
+    <color name="white_six">#efefef</color>
+    <color name="perrywinkle_70">#b38baaef</color>
+    <color name="white_three">#eaeaea</color>
+    <color name="apple_green">#7ed321</color>
 </resources>

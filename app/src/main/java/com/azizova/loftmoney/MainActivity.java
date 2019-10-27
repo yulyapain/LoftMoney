@@ -6,16 +6,25 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,8 +32,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String INCOME = "income";
     public static final String TOKEN = "token";
 
+    private ActionMode mActionMode;
+
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
+
+    private Api mApi;
+
+    private FloatingActionButton mFloatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +49,38 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout = findViewById(R.id.tabs);
         mToolbar = findViewById(R.id.toolbar);
 
+        setSupportActionBar(mToolbar);
+
+        mApi = ((LoftApp)getApplication()).getApi();
+
         final ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(3);
         final BudgetPagerAdapter adapter = new BudgetPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPager.setAdapter(adapter);
 
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 2)
+                    mFloatingActionButton.hide();
+                else mFloatingActionButton.show();
+                if (mActionMode != null)
+                    mActionMode.finish();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        mFloatingActionButton = findViewById(R.id.fab);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int activeFragmentIndex = viewPager.getCurrentItem();
@@ -65,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(viewPager);
         mTabLayout.getTabAt(0).setText(R.string.expences);
         mTabLayout.getTabAt(1).setText(R.string.income);
+        mTabLayout.getTabAt(2).setText(R.string.balance);
 
         for (Fragment fragment :getSupportFragmentManager().getFragments()) {
             if (fragment instanceof BudgetFragment)
@@ -76,8 +118,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActionModeStarted(ActionMode mode) {
         super.onActionModeStarted(mode);
-        mTabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray_blue));
-        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray_blue));
+        mTabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_grey_blue));
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_grey_blue));
+        mFloatingActionButton.hide();
+        mActionMode = mode;
     }
 
     @Override
@@ -85,6 +129,46 @@ public class MainActivity extends AppCompatActivity {
         super.onActionModeFinished(mode);
         mTabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mFloatingActionButton.show();
+        mActionMode = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.logout){
+            Call<Status> logout = mApi.logout();
+            logout.enqueue(new Callback<Status>() {
+                @Override
+                public void onResponse(Call<Status> call, Response<Status> response) {
+                    finish();
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                    editor.putString(MainActivity.TOKEN, response.body().getToken());
+                    editor.apply();
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                }
+
+                @Override
+                public void onFailure(Call<Status> call, Throwable t) {
+
+                }
+            });
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_logout, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void loadBalance(){
+        for (Fragment fragment :getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof BalanceFragment)
+                ((BalanceFragment) fragment).loadBalance();
+        }
     }
 
     static class BudgetPagerAdapter extends FragmentPagerAdapter{
@@ -101,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
                     return BudgetFragment.newInstance(EXPENSE);
                 case 1:
                     return BudgetFragment.newInstance(INCOME);
+                case 2:
+                    return BalanceFragment.newInstance();
                 default:
                     return null;
             }
@@ -108,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
