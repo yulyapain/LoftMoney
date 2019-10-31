@@ -1,13 +1,14 @@
 package com.azizova.loftmoney;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 public class DiagramView extends View {
 
@@ -18,23 +19,24 @@ public class DiagramView extends View {
 
 
     public DiagramView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public DiagramView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public DiagramView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public DiagramView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ColorPie, defStyleAttr, 0);
+        int colorExpence = a.getColor(R.styleable.ColorPie_color_expence, Color.BLACK);
+        int colorIncome = a.getColor(R.styleable.ColorPie_color_income, Color.BLACK);
+        a.recycle();
+        init(colorExpence, colorIncome);
     }
 
     public void update(float expences, float income) {
@@ -43,9 +45,11 @@ public class DiagramView extends View {
         invalidate();
     }
 
-    private void init(){
-        expencePaint.setColor(ContextCompat.getColor(getContext(), R.color.dark_sky_blue));
-        incomePaint.setColor(ContextCompat.getColor(getContext(), R.color.apple_green));
+    private void init(int colorExpence, int colorIncome){
+        //expencePaint.setColor(ContextCompat.getColor(getContext(), R.color.dark_sky_blue));
+        //incomePaint.setColor(ContextCompat.getColor(getContext(), R.color.apple_green));
+        incomePaint.setColor(colorIncome);
+        expencePaint.setColor(colorExpence);
     }
 
     @Override
