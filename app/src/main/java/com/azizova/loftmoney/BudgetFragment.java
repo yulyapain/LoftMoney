@@ -22,8 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 import java.util.ListIterator;
 
@@ -40,7 +38,6 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private View mView;
-    private FloatingActionButton mFab;
 
     private ActionMode mActionMode;
 
@@ -58,19 +55,19 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
 
         mApi = ((LoftApp)getActivity().getApplication()).getApi();
         loadItems();
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_budget, null);
-        mFab = getActivity().findViewById(R.id.fab);
 
         RecyclerView recyclerView = mView.findViewById(R.id.budget_item_list);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
 
         mSwipeRefreshLayout = mView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -130,6 +127,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
                 while (iterator.hasPrevious()){
                     mAdapter.addItem((Item)iterator.previous());
                 }
+                ((MainActivity)getActivity()).loadBalance();
             }
 
             @Override
@@ -142,10 +140,11 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
     @Override
     public void onItemClick(Item item, int position) {
         mAdapter.clearItem(position);
-        if (mActionMode != null)
-           mActionMode.setTitle(getString(R.string.selected, String.valueOf(mAdapter.getSelectedSize())));
-        if (mAdapter.getSelectedSize() == 0)
-            mActionMode.finish();
+        if (mActionMode != null) {
+            mActionMode.setTitle(getString(R.string.selected, String.valueOf(mAdapter.getSelectedSize())));
+            if (mAdapter.getSelectedSize() == 0)
+                mActionMode.finish();
+        }
     }
 
     @Override
@@ -160,7 +159,6 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mFab.hide();
         MenuInflater menuInflater = new MenuInflater(getActivity());
         menuInflater.inflate(R.menu.menu_delete, menu);
         mActionMode = mode;
@@ -187,7 +185,7 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            mActionMode.finish();
                         }
                     }).show();
         }
@@ -216,7 +214,6 @@ public class BudgetFragment extends Fragment implements ItemsAdapterListener, Ac
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        mFab.show();
         mActionMode = null;
         mAdapter.clearSelections();
     }
