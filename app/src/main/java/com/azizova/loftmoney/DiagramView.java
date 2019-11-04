@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 public class DiagramView extends View {
 
@@ -32,9 +33,9 @@ public class DiagramView extends View {
 
     public DiagramView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ColorPie, defStyleAttr, 0);
-        int colorExpence = a.getColor(R.styleable.ColorPie_color_expence, Color.BLACK);
-        int colorIncome = a.getColor(R.styleable.ColorPie_color_income, Color.BLACK);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DiagramView, defStyleAttr, 0);
+        int colorExpence = a.getColor(R.styleable.DiagramView_color_expence, ContextCompat.getColor(context, R.color.dark_sky_blue));
+        int colorIncome = a.getColor(R.styleable.DiagramView_color_income, ContextCompat.getColor(context, R.color.apple_green));
         a.recycle();
         init(colorExpence, colorIncome);
     }

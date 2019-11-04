@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ColorPie">
+    <declare-styleable name="DiagramView">
         <attr name="color_income" format="color"></attr>
         <attr name="color_expence" format="color"></attr>
     </declare-styleable>
